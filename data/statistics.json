@@ -1,0 +1,9 @@
+{
+  "num_users": 7176,
+  "num_videos": 10728,
+  "num_user_features": 1075,
+  "num_video_features": 30,
+  "train_pos_weight": 12.373657472793703,
+  "eval_pos_weight": 12.391546661679447,
+  "test_pos_weight": 12.384971987374291
+}
