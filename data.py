@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import numpy as np
 
 import torch
 from datasets import load_dataset
@@ -9,6 +10,16 @@ from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 
 
 def preprocess(ex):
+    hot_feat = np.array(
+        [
+            float(ex["play_progress"]),
+            np.log1p(ex["like_cnt"]),
+            np.log1p(ex["comment_cnt"]),
+            np.log1p(ex["follow_cnt"]),
+        ],
+        dtype=np.float32,
+    )
+
     return {
         "user_id": ex["user_id"],
         "user_feat": ex["user_feat"],
@@ -16,6 +27,7 @@ def preprocess(ex):
         "video_feat": ex["video_feat"],
         "text": f"{ex['caption']} [SEP] {' '.join(ex['tags'])}",
         "labels": int(ex["labels"]),
+        "hot_feat": hot_feat,
     }
 
 
@@ -35,6 +47,8 @@ def collate_fn(batch):
         l = len(b["video_feat"])
         video_feat[i, :l] = torch.tensor(b["video_feat"], dtype=torch.long)
 
+    hot_feat = torch.stack([torch.tensor(b["hot_feat"]) for b in batch])  # (B,4)
+
     texts = [b["text"] for b in batch]
     labels = torch.tensor([b["labels"] for b in batch], dtype=torch.float)
 
@@ -43,6 +57,7 @@ def collate_fn(batch):
         "user_feat": user_feat,
         "video_id": video_id,
         "video_feat": video_feat,
+        "hot_feat": hot_feat,
         "text": texts,
         "labels": labels,
     }

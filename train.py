@@ -7,13 +7,12 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from transformers import (
-    AlbertModel,
     BertTokenizer,
     Trainer,
     TrainingArguments,
 )
 
-from model import BinaryVideoWatchPredictor, BinaryVideoWatchPredictorFMAttn
+from model import BinaryVideoWatchPredictor, BinaryVideoWatchPredictorAttn
 from data import (
     load_jsonl_dataset,
     collate_fn,
@@ -130,9 +129,9 @@ def main():
         greater_is_better=True,
     )
     """
-    BinaryVideoWatchPredictorFMAttn with FocalTrainer
+    BinaryVideoWatchPredictor with FocalTrainer
     """
-    # model = BinaryVideoWatchPredictorFMAttn(
+    # model = BinaryVideoWatchPredictor(
     #     num_users=7177,
     #     num_videos=10729,
     #     num_user_features=1076,
